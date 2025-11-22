@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-const COMMIT_HASH = "abc1234";
+const COMMIT_HASH = "abc1234"; // atualizar antes de gerar o build
 
 export default function SobreAppScreen() {
   return (

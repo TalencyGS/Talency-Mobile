@@ -16,12 +16,16 @@ export default function TrilhaDetalheScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    api.get(`/trilhas/${id}/etapas`).then(resp => setEtapas(resp.data));
+    async function carregar() {
+      const resp = await api.get(`/trilhas/${id}/etapas`);
+      setEtapas(resp.data);
+    }
+    carregar();
   }, [id]);
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: "#020617" }}>
-      <Text style={{ color: "#fff", fontSize: 20, marginBottom: 8 }}>
+      <Text style={{ color: "#fff", fontSize: 20, marginBottom: 12 }}>
         Etapas da trilha
       </Text>
 
@@ -45,15 +49,17 @@ export default function TrilhaDetalheScreen() {
         )}
       />
 
-      <Button
-        title="Ver metas do roadmap"
-        onPress={() =>
-          router.push({
-            pathname: "/roadmap/[roadmapId]",
-            params: { roadmapId },
-          })
-        }
-      />
+      <View style={{ marginTop: 16 }}>
+        <Button
+          title="Ver metas do roadmap"
+          onPress={() =>
+            router.push({
+              pathname: "/roadmap/[roadmapId]",
+              params: { roadmapId },
+            })
+          }
+        />
+      </View>
     </View>
   );
 }

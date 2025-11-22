@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
-import { api } from "../../constants/api";
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
+import { api } from "../../constants/api";
 
 type Trilha = {
   idTrilha: number;
@@ -13,14 +13,38 @@ type Trilha = {
 
 export default function MinhasTrilhasScreen() {
   const [trilhas, setTrilhas] = useState<Trilha[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    api.get("/trilhas/minhas").then(resp => setTrilhas(resp.data));
+    async function carregar() {
+      try {
+        const resp = await api.get("/trilhas/minhas");
+        setTrilhas(resp.data);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregar();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#020617" }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, padding: 16, backgroundColor: "#020617" }}>
+      <Text style={{ color: "#fff", fontSize: 20, marginBottom: 12 }}>
+        Minhas trilhas
+      </Text>
+
       <FlatList
         data={trilhas}
         keyExtractor={t => String(t.idTrilha)}
