@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const api = axios.create({
-  baseURL: "https://SUA-API-AQUI/api/v1",
+  baseURL: "http://talency-webapp-gs.azurewebsites.net/api",
 });
 
 api.interceptors.request.use(async config => {
