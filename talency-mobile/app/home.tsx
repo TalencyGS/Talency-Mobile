@@ -49,7 +49,7 @@ export default function HomeScreen() {
             
             <TouchableOpacity 
                 style={styles.cardSmall} 
-                // onPress={() => router.push("/roadmap")}
+                onPress={() => router.push("/roadmap" as any)}
             >
                 <Text style={styles.cardTitle}>Roadmap</Text>
                 <Text style={styles.cardDesc}>Seu plano de carreira</Text>

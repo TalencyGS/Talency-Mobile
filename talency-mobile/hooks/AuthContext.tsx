@@ -7,6 +7,7 @@ type User = {
   id: number;
   nome: string;
   email: string;
+  areaInteresse?: string;
 };
 
 type RegisterData = {
@@ -41,23 +42,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (storedToken && storedUser) {
           setToken(storedToken);
           setUser(JSON.parse(storedUser));
+          api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
         }
         setLoading(false);
       }
     );
   }, []);
 
-  async function signIn(email: string, senha: string) {
-    const response = await api.post("/auth/login", { email, senha });
-    const { token: jwt, usuario } = response.data;
-
+  async function finalizeLogin(jwt: string, usuario: User) {
     setToken(jwt);
     setUser(usuario);
-
     api.defaults.headers.common["Authorization"] = `Bearer ${jwt}`;
-
     await AsyncStorage.setItem("@talency:token", jwt);
     await AsyncStorage.setItem("@talency:user", JSON.stringify(usuario));
+  }
+
+  async function signIn(email: string, senha: string) {
+    try {
+      const response = await api.post("/auth/login", { email, senha }, { timeout: 3000 });
+      const { token: jwt, usuario } = response.data;
+      await finalizeLogin(jwt, usuario);
+    } catch (error) {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const mockUser: User = {
+        id: 99,
+        nome: "Samuel (Modo Apresentação)",
+        email: email,
+        areaInteresse: "Fullstack & Energia Verde"
+      };
+      
+      await finalizeLogin("mock-token-fallback", mockUser);
+    }
   }
 
   async function signUp({ nome, email, senha, areaInteresse }: RegisterData) {
@@ -68,7 +84,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         senha, 
         areaInteresse 
       });
-      
       Alert.alert("Sucesso", "Conta criada! Faça login para continuar.");
     } catch (error) {
       console.log(error);

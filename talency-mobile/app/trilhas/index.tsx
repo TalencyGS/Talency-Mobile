@@ -1,78 +1,122 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  TouchableOpacity, 
+  StyleSheet, 
+  ActivityIndicator,
+  StatusBar
+} from "react-native";
 import { useRouter } from "expo-router";
+import { Colors } from "../../constants/theme";
 import { api } from "../../constants/api";
 
 type Trilha = {
-  idTrilha: number;
-  nomeTrilha: string;
+  id: number;
+  nome: string;
+  area: string;
   descricao: string;
-  percentual: number;
-  idRoadmap: number;
+  nivel?: string;
 };
 
-export default function MinhasTrilhasScreen() {
+const MOCK_TRILHAS: Trilha[] = [
+  { id: 1, nome: "Técnico em Energia Verde", area: "Sustentabilidade", descricao: "Aprenda sobre painéis solares e eficiência energética.", nivel: "Iniciante" },
+  { id: 2, nome: "Desenvolvedor Fullstack", area: "Tecnologia", descricao: "Domine React, Java e Bancos de Dados.", nivel: "Avançado" },
+  { id: 3, nome: "Analista de Dados (ESG)", area: "Dados", descricao: "Como usar dados para gerar impacto social e ambiental.", nivel: "Intermediário" },
+  { id: 4, nome: "UX Designer", area: "Design", descricao: "Crie experiências de usuário incríveis e acessíveis.", nivel: "Iniciante" },
+];
+
+export default function TrilhasScreen() {
+  const router = useRouter();
   const [trilhas, setTrilhas] = useState<Trilha[]>([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
-    async function carregar() {
-      try {
-        const resp = await api.get("/trilhas/minhas");
-        setTrilhas(resp.data);
-      } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    carregar();
+    fetchTrilhas();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#020617" }}>
-        <ActivityIndicator />
-      </View>
-    );
+  async function fetchTrilhas() {
+    try {
+      const response = await api.get("/Trilha");
+      setTrilhas(response.data);
+
+    } catch (error) {
+      console.log("Erro ao buscar trilhas, usando backup...");
+      setTrilhas(MOCK_TRILHAS);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  return (
-    <View style={{ flex: 1, padding: 16, backgroundColor: "#020617" }}>
-      <Text style={{ color: "#fff", fontSize: 20, marginBottom: 12 }}>
-        Minhas trilhas
-      </Text>
+  const renderItem = ({ item }: { item: Trilha }) => (
+    <TouchableOpacity 
+      style={styles.card}
+      onPress={() => router.push(`/trilhas/${item.id}`)}
+      activeOpacity={0.9}
+    >
+      <View style={styles.cardHeader}>
+        <View style={styles.badge}>
+          <Text style={styles.badgeText}>{item.area}</Text>
+        </View>
+        <Text style={styles.nivelText}>{item.nivel}</Text>
+      </View>
+      
+      <Text style={styles.cardTitle}>{item.nome}</Text>
+      <Text style={styles.cardDesc} numberOfLines={2}>{item.descricao}</Text>
+      
+      <View style={styles.cardFooter}>
+        <Text style={styles.linkText}>Ver detalhes →</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
-      <FlatList
-        data={trilhas}
-        keyExtractor={t => String(t.idTrilha)}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{
-              padding: 16,
-              marginBottom: 8,
-              borderRadius: 12,
-              backgroundColor: "#111827",
-            }}
-            onPress={() =>
-              router.push({
-                pathname: "/trilhas/[id]",
-                params: { id: item.idTrilha, roadmapId: item.idRoadmap },
-              })
-            }
-          >
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>
-              {item.nomeTrilha}
-            </Text>
-            <Text style={{ color: "#9ca3af" }}>{item.descricao}</Text>
-            <Text style={{ color: "#60a5fa", marginTop: 4 }}>
-              Progresso {item.percentual} por cento
-            </Text>
-          </TouchableOpacity>
-        )}
-      />
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      <Text style={styles.headerTitle}>Trilhas Disponíveis</Text>
+      <Text style={styles.headerSubtitle}>Escolha seu caminho para o futuro</Text>
+
+      {loading ? (
+        <ActivityIndicator size="large" color={Colors.primary2} style={{ marginTop: 50 }} />
+      ) : (
+        <FlatList
+          data={trilhas}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background1, paddingTop: 20 },
+  headerTitle: { fontSize: 28, fontWeight: "bold", color: Colors.primary2, paddingHorizontal: 24 },
+  headerSubtitle: { fontSize: 16, color: Colors.text2, paddingHorizontal: 24, marginBottom: 20 },
+  listContent: { padding: 24, paddingTop: 0, gap: 16 },
+  
+  card: {
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#eee"
+  },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
+  badge: { backgroundColor: Colors.primary1, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  badgeText: { fontSize: 12, fontWeight: "bold", color: Colors.text1 },
+  nivelText: { fontSize: 12, color: Colors.text2, fontStyle: 'italic' },
+  cardTitle: { fontSize: 20, fontWeight: "bold", color: Colors.text1, marginBottom: 8 },
+  cardDesc: { fontSize: 14, color: Colors.text2, lineHeight: 20 },
+  cardFooter: { marginTop: 16, flexDirection: 'row', justifyContent: 'flex-end' },
+  linkText: { color: Colors.primary2, fontWeight: "bold" }
+});

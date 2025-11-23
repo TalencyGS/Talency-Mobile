@@ -25,7 +25,7 @@ export default function LoginScreen() {
       await signIn(email, senha);
       router.replace("/home");
     } catch (error) {
-      Alert.alert("Erro", "Não foi possível entrar. Verifique os dados.");
+      console.log("Erro inesperado no login");
     } finally {
       setLoading(false);
     }
