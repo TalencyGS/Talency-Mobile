@@ -9,6 +9,7 @@ import {
   StatusBar
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "../../constants/theme";
 import { api } from "../../constants/api";
 
@@ -66,7 +67,8 @@ export default function TrilhasScreen() {
       <Text style={styles.cardDesc} numberOfLines={2}>{item.descricao}</Text>
       
       <View style={styles.cardFooter}>
-        <Text style={styles.linkText}>Ver detalhes →</Text>
+        <Text style={styles.linkText}>Ver detalhes</Text>
+        <Ionicons name="arrow-forward" size={16} color={Colors.primary2} />
       </View>
     </TouchableOpacity>
   );
@@ -74,8 +76,18 @@ export default function TrilhasScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <Text style={styles.headerTitle}>Trilhas Disponíveis</Text>
-      <Text style={styles.headerSubtitle}>Escolha seu caminho para o futuro</Text>
+      
+      <View style={styles.headerContainer}>
+        <View style={styles.titleRow}>
+            <View style={styles.iconBox}>
+                <Ionicons name="layers" size={24} color={Colors.primary2} />
+            </View>
+            <Text style={styles.headerTitle}>Trilhas Disponíveis</Text>
+        </View>
+        <Text style={styles.headerSubtitle}>
+            Explore nossos cursos e prepare-se para as profissões do futuro.
+        </Text>
+      </View>
 
       {loading ? (
         <ActivityIndicator size="large" color={Colors.primary2} style={{ marginTop: 50 }} />
@@ -93,30 +105,69 @@ export default function TrilhasScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background1, paddingTop: 20 },
-  headerTitle: { fontSize: 28, fontWeight: "bold", color: Colors.primary2, paddingHorizontal: 24 },
-  headerSubtitle: { fontSize: 16, color: Colors.text2, paddingHorizontal: 24, marginBottom: 20 },
+  container: { flex: 1, backgroundColor: Colors.background1 },
+  
+  headerContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 24,
+    backgroundColor: Colors.background1,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 12
+  },
+  iconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: Colors.background3,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  headerTitle: { 
+    fontSize: 26,
+    fontWeight: "bold", 
+    color: Colors.text1,
+    flex: 1 
+  },
+  headerSubtitle: { 
+    fontSize: 16, 
+    color: Colors.text2, 
+    lineHeight: 22 
+  },
+
   listContent: { padding: 24, paddingTop: 0, gap: 16 },
   
   card: {
     backgroundColor: "#FFF",
-    borderRadius: 16,
+    borderRadius: 20, 
     padding: 20,
     shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
-    shadowRadius: 6,
+    shadowRadius: 8,
     elevation: 3,
-    marginBottom: 16,
+    marginBottom: 4,
     borderWidth: 1,
-    borderColor: "#eee"
+    borderColor: "#F3F4F6"
   },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
-  badge: { backgroundColor: Colors.primary1, paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  badge: { backgroundColor: Colors.primary1, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
   badgeText: { fontSize: 12, fontWeight: "bold", color: Colors.text1 },
-  nivelText: { fontSize: 12, color: Colors.text2, fontStyle: 'italic' },
+  nivelText: { fontSize: 12, color: Colors.text2, fontStyle: 'italic', marginTop: 4 },
+  
   cardTitle: { fontSize: 20, fontWeight: "bold", color: Colors.text1, marginBottom: 8 },
-  cardDesc: { fontSize: 14, color: Colors.text2, lineHeight: 20 },
-  cardFooter: { marginTop: 16, flexDirection: 'row', justifyContent: 'flex-end' },
-  linkText: { color: Colors.primary2, fontWeight: "bold" }
+  cardDesc: { fontSize: 14, color: Colors.text2, lineHeight: 22 },
+  
+  cardFooter: { 
+    marginTop: 20, 
+    flexDirection: 'row', 
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 8
+  },
+  linkText: { color: Colors.primary2, fontWeight: "bold", fontSize: 14 }
 });
