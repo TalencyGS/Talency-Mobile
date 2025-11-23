@@ -24,8 +24,7 @@ O aplicativo mobile concentra no celular as principais funcionalidades do Talenc
 
 ## Links importantes
 
-- Repositório no GitHub Classroom: **INSERIR_LINK_DO_REPOSITORIO_AQUI**  
-- Vídeo de demonstração no YouTube: **INSERIR_LINK_DO_VIDEO_AQUI**  
+- Vídeo de demonstração no YouTube: https://youtu.be/ZeT1-ZGnQUA  
 
 ## Principais tecnologias
 
@@ -39,7 +38,7 @@ O aplicativo mobile concentra no celular as principais funcionalidades do Talenc
 
 ### Backend utilizado
 
-- API .NET publicada em Azure, configurada em `constants/api.ts`  
+- API .NET publicada em Azure
   - Base atual configurada no projeto  
     ```ts
     export const api = axios.create({
@@ -202,14 +201,3 @@ Esta tela atende ao requisito da disciplina que pede a exibição do hash do com
    ```
 
 5. Ler o QR Code com o Expo Go ou abrir no emulador Android ou iOS  
-
-## Checklist de aderência aos requisitos da disciplina
-
-- Mínimo de 6 telas com navegação  o app inclui mais de 8 telas entre autenticação, trilhas, roadmap, IA e sobre  
-- CRUD completo com API  implementado no módulo de Metas do Roadmap com operações de Create, Read, Update e Delete  
-- Sistema de autenticação com login, cadastro, logout e rotas protegidas  implementado via `AuthContext`, AsyncStorage e Expo Router  
-- Estilização com identidade visual coerente com o tema Talency  aplicada em todas as telas com uso de `Colors` centralizado em `theme.ts`  
-- Arquitetura organizada por pastas, componentes reutilizáveis, hooks, constantes e serviços de API  presente no projeto `talency-mobile`  
-- Tela Sobre o App exibindo hash do commit  implementada em `app/sobre.tsx` com a constante `COMMIT_HASH`  
-- Fluxos prontos para demonstração em vídeo  contemplando login, navegação entre telas, CRUD de metas, interação com IA Advisor e tela informativa sobre o app  
-
